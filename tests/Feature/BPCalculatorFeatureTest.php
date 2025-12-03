@@ -16,11 +16,6 @@ class BPCalculatorFeatureTest extends TestCase
 
     public function test_ideal_blood_pressure_scenario()
     {
-        // BDD style:
-        // Given I am on the BP form
-        // When I submit a realistic ideal reading
-        // Then I should see "Ideal blood pressure"
-
         $response = $this->post('/calculate', [
             'systolic'  => 110,
             'diastolic' => 70,
@@ -31,14 +26,11 @@ class BPCalculatorFeatureTest extends TestCase
         $response->assertSee('110 / 70');
         $response->assertSee('Category:');
         $response->assertSee('Ideal blood pressure');
+        $response->assertSee('Your blood pressure is in the ideal range.');
     }
 
     public function test_high_blood_pressure_scenario()
     {
-        // Given a user with high BP
-        // When they submit their reading
-        // Then the app should categorise it as High blood pressure
-
         $response = $this->post('/calculate', [
             'systolic'  => 150,
             'diastolic' => 95,
@@ -47,22 +39,19 @@ class BPCalculatorFeatureTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('150 / 95');
         $response->assertSee('High blood pressure');
+        $response->assertSee('Your blood pressure is high.');
     }
 
     public function test_invalid_input_shows_validation_errors()
     {
-        // Given I enter an unrealistic reading (systolic <= diastolic)
-        // When I submit the form
-        // Then I should see a validation error on the page
-
         $response = $this->from('/')
             ->post('/calculate', [
                 'systolic'  => 110,
-                'diastolic' => 110,  // invalid: systolic must be > diastolic
+                'diastolic' => 110,
             ]);
 
-        $response->assertStatus(302);            // redirect back
-        $response->assertRedirect('/');          // back to form
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
 
         $this->followRedirects($response)
             ->assertSee('The systolic (upper) value must be higher than the diastolic (lower) value.');
@@ -70,10 +59,6 @@ class BPCalculatorFeatureTest extends TestCase
 
     public function test_unrealistic_difference_shows_custom_error()
     {
-        // Given I enter a very unrealistic combination (difference < 20)
-        // When I submit the form
-        // Then I should see the custom "not realistic" error
-
         $response = $this->from('/')
             ->post('/calculate', [
                 'systolic'  => 120,

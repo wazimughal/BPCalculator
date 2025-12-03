@@ -21,6 +21,7 @@ class BloodPressureServiceTest extends TestCase
 
         $this->assertEquals('Low blood pressure', $result['label']);
         $this->assertEquals('#800080', $result['color']);
+        $this->assertStringContainsString('lower than normal', $result['advice']);
     }
 
     public function test_ideal_blood_pressure_classification()
@@ -29,6 +30,7 @@ class BloodPressureServiceTest extends TestCase
 
         $this->assertEquals('Ideal blood pressure', $result['label']);
         $this->assertEquals('#008000', $result['color']);
+        $this->assertStringContainsString('in the ideal range', $result['advice']);
     }
 
     public function test_pre_high_blood_pressure_classification()
@@ -37,6 +39,7 @@ class BloodPressureServiceTest extends TestCase
 
         $this->assertEquals('Pre-high blood pressure', $result['label']);
         $this->assertEquals('#c7ca0bff', $result['color']);
+        $this->assertStringContainsString('slightly elevated', $result['advice']);
     }
 
     public function test_high_blood_pressure_by_systolic()
@@ -45,6 +48,7 @@ class BloodPressureServiceTest extends TestCase
 
         $this->assertEquals('High blood pressure', $result['label']);
         $this->assertEquals('#FF0000', $result['color']);
+        $this->assertStringContainsString('blood pressure is high', $result['advice']);
     }
 
     public function test_high_blood_pressure_by_diastolic()
@@ -53,6 +57,7 @@ class BloodPressureServiceTest extends TestCase
 
         $this->assertEquals('High blood pressure', $result['label']);
         $this->assertEquals('#FF0000', $result['color']);
+        $this->assertStringContainsString('blood pressure is high', $result['advice']);
     }
 
     public function test_realistic_combination_accepts_190_over_95()

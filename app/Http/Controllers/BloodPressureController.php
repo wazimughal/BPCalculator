@@ -40,11 +40,13 @@ class BloodPressureController extends Controller
             'diastolic'     => null,
             'category'      => null,
             'color'         => null,
+            'advice'        => null,
             'historyItems'  => $historyPage,
             'page'          => $page,
             'hasNext'       => $hasNext,
             'hasPrevious'   => $hasPrevious,
         ]);
+
     }
 
     public function calculate(Request $request)
@@ -150,6 +152,7 @@ class BloodPressureController extends Controller
             'diastolic'     => $diastolic,
             'category'      => $result['label'],
             'color'         => $result['color'],
+            'advice'        => $result['advice'],
             'historyItems'  => $historyPage,
             'page'          => $page,
             'hasNext'       => $hasNext,
