@@ -112,8 +112,20 @@
             <p style="font-size: 20px;">
                 Category: <strong>{{ $category }}</strong>
             </p>
+
+            @if (!empty($advice))
+                <p style="margin-top: 10px; font-size: 14px;">
+                    <strong>Advice:</strong> {{ $advice }}
+                </p>
+            @endif
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="{{ asset('images/bp-graph.jpg') }}" alt="Blood Pressure Chart"
+                style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
         </div>
     @endif
+
     @if (true)
         <!-- ($category)-->
         <div style="text-align: center; margin-top: 20px;">
