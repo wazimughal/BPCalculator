@@ -11,9 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1) Get the code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2) Setup PHP runtime
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -21,17 +23,26 @@ jobs:
           extensions: mbstring, intl, pdo_mysql
           coverage: xdebug
 
+      # 3) Install Composer dependencies (including dev tools like PHPStan)
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
+      # 4) Prepare Laravel environment
       - name: Copy .env
         run: cp .env.example .env
 
       - name: Generate app key
         run: php artisan key:generate
 
+      # 5) Run unit tests (your php artisan test suite)
       - name: Run unit tests
         run: php artisan test
 
+      # 6) Static analysis (code quality) with PHPStan
+      - name: Run PHPStan (static analysis)
+        run: vendor/bin/phpstan analyse app --level=3
+        continue-on-error: true
+
+      # 7) Security check on dependencies
       - name: Check dependencies for vulnerabilities
         run: composer audit || true
