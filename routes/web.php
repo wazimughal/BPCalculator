@@ -11,3 +11,6 @@ Route::get('/calculate', function () {
 });
 
 Route::post('/calculate', [BloodPressureController::class, 'calculate'])->name('bp.calculate');
+
+// Extra route for Azure entry point (bp.php)
+Route::get('/bp.php', [BloodPressureController::class, 'showForm']);
