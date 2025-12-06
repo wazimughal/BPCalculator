@@ -87,7 +87,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ url('index.php/calculate') }}">
+    <form method="POST" action="{{ route('bp.calculate') }}">
         @csrf
 
         <label for="systolic">Systolic (70–190 mmHg)</label>
