@@ -87,7 +87,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('bp.calculate') }}">
+    <form method="POST" action="{{ url('index.php/calculate') }}">
         @csrf
 
         <label for="systolic">Systolic (70–190 mmHg)</label>
@@ -128,10 +128,10 @@
 
     @if (true)
         <!-- ($category)-->
-        <div style="text-align: center; margin-top: 20px;">
+        <!--<div style="text-align: center; margin-top: 20px;">
             <img src="{{ asset('images/bp-graph.jpg') }}" alt="Blood Pressure Chart"
                 style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 8px;">
-        </div>
+        </div>-->
     @endif
 
     {{-- Visible telemetry: recent calculations with pagination --}}
