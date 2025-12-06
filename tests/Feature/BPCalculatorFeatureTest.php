@@ -16,7 +16,7 @@ class BPCalculatorFeatureTest extends TestCase
 
     public function test_ideal_blood_pressure_scenario()
     {
-        $response = $this->post('/calculate', [
+        $response = $this->post(route('bp.calculate'), [
             'systolic'  => 110,
             'diastolic' => 70,
         ]);
@@ -31,7 +31,7 @@ class BPCalculatorFeatureTest extends TestCase
 
     public function test_high_blood_pressure_scenario()
     {
-        $response = $this->post('/calculate', [
+        $response = $this->post(route('bp.calculate'), [
             'systolic'  => 150,
             'diastolic' => 95,
         ]);
@@ -45,7 +45,7 @@ class BPCalculatorFeatureTest extends TestCase
     public function test_invalid_input_shows_validation_errors()
     {
         $response = $this->from('/')
-            ->post('/calculate', [
+            ->post(route('bp.calculate'), [
                 'systolic'  => 110,
                 'diastolic' => 110,
             ]);
@@ -60,7 +60,7 @@ class BPCalculatorFeatureTest extends TestCase
     public function test_unrealistic_difference_shows_custom_error()
     {
         $response = $this->from('/')
-            ->post('/calculate', [
+            ->post(route('bp.calculate'), [
                 'systolic'  => 120,
                 'diastolic' => 110, // difference = 10 < 20
             ]);
