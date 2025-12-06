@@ -90,11 +90,11 @@
     <form method="POST" action="{{ route('bp.calculate') }}">
         @csrf
 
-        <label for="systolic">Systolic (70–190 mmHg)</label>
+        <label for="systolic">Systolic (70-190 mmHg)</label>
         <input type="number" name="systolic" id="systolic" min="70" max="190"
             value="{{ old('systolic', $systolic) }}" required>
 
-        <label for="diastolic">Diastolic (40–100 mmHg)</label>
+        <label for="diastolic">Diastolic (40-100 mmHg)</label>
         <input type="number" name="diastolic" id="diastolic" min="40" max="100"
             value="{{ old('diastolic', $diastolic) }}" required>
 
