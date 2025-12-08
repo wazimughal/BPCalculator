@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy PHP app to Azure Web App - bpcalculator
 
 on:
@@ -11,9 +8,10 @@ on:
 
 jobs:
   build:
+    name: CI - Build & Test
     runs-on: ubuntu-latest
     permissions:
-      contents: read # This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +19,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.4"
+          php-version: "8.2"
 
       - name: Check if composer.json exists
         id: check_files
@@ -33,17 +31,18 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true'
         run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
 
-      # 🔹 Prepare Laravel env for tests
+      # Prepare Laravel env
       - name: Copy .env
         run: cp .env.example .env
 
       - name: Generate app key
         run: php artisan key:generate
 
-      # 🔹 Run tests – if this fails, deploy job will NOT run
+      # Run full test suite
       - name: Run test suite
         run: php artisan test
 
+      # Upload artifact only if tests succeed
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -51,11 +50,12 @@ jobs:
           path: .
 
   deploy:
+    name: CD - Deploy to Azure
     runs-on: ubuntu-latest
-    needs: build # ⬅️ deploy only runs if build (including tests) succeeds
+    needs: build
+    if: needs.build.result == 'success' && github.ref == 'refs/heads/main'
     permissions:
-      id-token: write # This is required for requesting the JWT
-      contents: read # This is required for actions/checkout
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -63,17 +63,10 @@ jobs:
         with:
           name: php-app
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_F57E92A77F304604A27DEB59CF0E3635 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F3BBD1C51CD74DF8B6EAB224292993B9 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2F721055F6D54FC587E4B2D4EC2A6ED1 }}
-
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure Web App (student subscription)
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: "bpcalculator"
-          slot-name: "Production"
+          app-name: "YOUR_NEW_APP_NAME_HERE" # 👈 change this
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
