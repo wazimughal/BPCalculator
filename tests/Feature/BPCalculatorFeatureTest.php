@@ -71,4 +71,5 @@ class BPCalculatorFeatureTest extends TestCase
         $this->followRedirects($response)
             ->assertSee('These blood pressure values do not look realistic.');
     }
+    
 }
