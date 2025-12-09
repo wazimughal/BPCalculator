@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BloodPressureController;
+use Illuminate\Support\Facades\Artisan;
 
 // Show the BP form on GET /
 Route::get('/', [BloodPressureController::class, 'showForm'])->name('bp.form');
@@ -14,7 +15,8 @@ Route::get('/calculate', function () {
     return redirect()->route('bp.form');
 });
 
-// If someone hits /bp.php as a path inside Laravel, also send them to the form
-Route::get('/bp.php', function () {
-    return redirect()->route('bp.form');
+// To clear all the caches
+Route::get('/clear-all', function () {
+    Artisan::call('optimize:clear');
+    return 'All caches cleared!';
 });
