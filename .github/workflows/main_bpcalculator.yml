@@ -1,70 +1,30 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy PHP app to Azure Web App - bpcalculator
+name: Deploy BPCalculator to Azure
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["BPCalculator CI"] # 👈 exact name of your CI workflow
+    types:
+      - completed
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-
-      - name: Check if composer.json exists
-        id: check_files
-        uses: andstor/file-existence-action@v1
-        with:
-          files: 'composer.json'
-
-      - name: Run composer install if composer.json exists
-        if: steps.check_files.outputs.files_exists == 'true'
-        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
-
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: php-app
-          path: .
-
   deploy:
+    # ✅ Only deploy if CI succeeded AND branch is main
+    if: >
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+      - name: Checkout code for the tested commit
+        uses: actions/checkout@v4
         with:
-          name: php-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3310D10CA9784440886F08DDFA1E6CEB }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2BA471A562A1434B96E4321551262259 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E382C06D5EBF4477958D4EEC1D3DB343 }}
+          ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: Install prod dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
+      - name: Deploy to Azure Web App (student subscription)
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
-          app-name: 'bpcalculator'
-          slot-name: 'Production'
+          app-name: "AZURE_WEBAPP_PUBLISH_PROFILE" # 👈 CHANGE THIS
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
-          
