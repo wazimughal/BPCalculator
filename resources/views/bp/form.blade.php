@@ -73,7 +73,7 @@
 </head>
 
 <body>
-    <h1>Blood Pressure Category Calculator</h1>
+    <h1>Blood Pressure Category Calculator & advice</h1>
 
     {{-- Validation Errors --}}
     @if ($errors->any())
