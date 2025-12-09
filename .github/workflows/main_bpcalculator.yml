@@ -57,5 +57,5 @@ jobs:
         with:
           app-name: "bpcalculator" # main app name
           slot-name: "blue" # 🔵 deploy to BLUE slot
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_BLUE }}
           package: .
