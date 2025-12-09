@@ -1,23 +1,17 @@
 name: Deploy BPCalculator to Azure
 
 on:
-  workflow_run:
-    workflows: ["BPCalculator CI"] # 👈 exact name of your CI workflow
-    types:
-      - completed
+  push:
+    branches: ["main"]
+  workflow_dispatch:
 
 jobs:
   deploy:
-    # ✅ Only deploy if CI succeeded AND branch is main
-    if: >
-      ${{ github.event.workflow_run.conclusion == 'success' &&
-          github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code for the tested commit
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Install prod dependencies
         run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress
@@ -25,6 +19,6 @@ jobs:
       - name: Deploy to Azure Web App (student subscription)
         uses: azure/webapps-deploy@v3
         with:
-          app-name: "AZURE_WEBAPP_PUBLISH_PROFILE" # 👈 CHANGE THIS
+          app-name: "bpcalculator" # 👈 EXACTLY as in your Azure portal
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: .
